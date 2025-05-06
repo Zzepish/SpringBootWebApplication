@@ -1,0 +1,2 @@
+1. AOP - Aspect Oriented Programming (read - what is aspect) https://docs.spring.io/spring-framework/reference/core/aop/introduction-defn.html
+2. Target object (that are we using Aspect Advice on) will be wrapped into the Proxy
