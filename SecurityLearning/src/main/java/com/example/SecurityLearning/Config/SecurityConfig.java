@@ -1,7 +1,11 @@
 package com.example.SecurityLearning.Config;
 
+import com.example.SecurityLearning.Service.MyUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -9,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -19,6 +25,20 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private MyUserDetailsService userDetailsService;
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+        authProvider.setUserDetailsService(this.userDetailsService);
+        authProvider.setPasswordEncoder(new BCryptPasswordEncoder(10));
+
+        return authProvider;
+    }
 
     private Collection<UserDetails> users = new ArrayList<>(List.of(
             User
@@ -52,10 +72,10 @@ public class SecurityConfig {
 
 
     //User login/password mechanism
-    @Bean
+   /* @Bean
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(this.users);
-    }
+    }*/
 
     /**
      * This way we are completely takin over Security control. All of other security will be removed
